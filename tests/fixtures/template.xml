@@ -1,0 +1,105 @@
+<URProgram name="synthetic_template" installation="default" installationRelativePath="default" directory="/programs" createdIn="5.25.1" lastSavedIn="5.25.1" robotSerialNumber="0000000000" createdInPolyscopeProgramVersion="2" lastSavedInPolycopeProgramVersion="2" crcValue="0">
+  <kinematics status="LINEARIZED" validChecksum="true">
+    <deltaTheta value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+    <a value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+    <d value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+    <alpha value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+    <jointChecksum value="0, 0, 0, 0, 0, 0"/>
+  </kinematics>
+  <children>
+    <InitVariablesNode/>
+    <SpecialSequence type="BeforeStart">
+      <children>
+        <Move motionType="MoveJ" speed="1.0" acceleration="1.0" useActiveTCP="true" positionType="CartesianPose" optimoveEnabled="false" optiMoveSpeed="0.3" optiMoveAcceleration="0.09">
+          <feature class="GeomFeatureReference" referencedName="Joint_0_name"/>
+          <children>
+            <Waypoint type="Fixed" name="home" kinematicsFlags="4">
+              <position>
+                <JointAngles angles="0.0, -1.5, -1.5, -1.5, 1.5, 0.0"/>
+                <TCPOffset pose="0.0, 0.0, 0.1, 0.0, 0.0, 0.0"/>
+                <Kinematics status="LINEARIZED" validChecksum="true">
+                <deltaTheta value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <a value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <d value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <alpha value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <jointChecksum value="0, 0, 0, 0, 0, 0"/>
+              </Kinematics>
+              </position>
+              <BaseToFeature pose="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+            </Waypoint>
+          </children>
+        </Move>
+      </children>
+    </SpecialSequence>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="false">
+      <children>
+        <Move motionType="MoveP" speed="0.25" acceleration="1.2" blendRadius="0.003" useActiveTCP="true" positionType="CartesianPose" optimoveEnabled="false" optiMoveSpeed="0.3" optiMoveAcceleration="0.09">
+          <feature class="GeomFeatureReference" reference="../../../../SpecialSequence/children/Move/feature"/>
+          <children>
+            <Waypoint type="Fixed" name="a" kinematicsFlags="4">
+              <position>
+                <JointAngles angles="0.1, -1.6, -1.4, -1.5, 1.5, 0.1"/>
+                <TCPOffset pose="0.0, 0.0, 0.1, 0.0, 0.0, 0.0"/>
+                <Kinematics status="LINEARIZED" validChecksum="true">
+                <deltaTheta value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <a value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <d value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <alpha value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <jointChecksum value="0, 0, 0, 0, 0, 0"/>
+              </Kinematics>
+              </position>
+              <BaseToFeature pose="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+            </Waypoint>
+            <Waypoint type="Fixed" name="b" kinematicsFlags="4">
+              <position>
+                <JointAngles angles="0.2, -1.7, -1.3, -1.5, 1.5, 0.2"/>
+                <TCPOffset pose="0.0, 0.0, 0.1, 0.0, 0.0, 0.0"/>
+                <Kinematics status="LINEARIZED" validChecksum="true">
+                <deltaTheta value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <a value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <d value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <alpha value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <jointChecksum value="0, 0, 0, 0, 0, 0"/>
+              </Kinematics>
+              </position>
+              <BaseToFeature pose="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+            </Waypoint>
+            <Waypoint type="Fixed" name="c" kinematicsFlags="4">
+              <position>
+                <JointAngles angles="0.3, -1.8, -1.2, -1.5, 1.5, 0.3"/>
+                <TCPOffset pose="0.0, 0.0, 0.1, 0.0, 0.0, 0.0"/>
+                <Kinematics status="LINEARIZED" validChecksum="true">
+                <deltaTheta value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <a value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <d value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <alpha value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <jointChecksum value="0, 0, 0, 0, 0, 0"/>
+              </Kinematics>
+              </position>
+              <BaseToFeature pose="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+            </Waypoint>
+          </children>
+        </Move>
+        <Move motionType="MoveJ" speed="1.0" acceleration="1.0" useActiveTCP="true" positionType="CartesianPose" optimoveEnabled="false" optiMoveSpeed="0.3" optiMoveAcceleration="0.09">
+          <feature class="GeomFeatureReference" reference="../../../../SpecialSequence/children/Move/feature"/>
+          <children>
+            <Waypoint type="Fixed" name="end" kinematicsFlags="4">
+              <position>
+                <JointAngles angles="0.0, -1.5, -1.5, -1.5, 1.5, 0.0"/>
+                <TCPOffset pose="0.0, 0.0, 0.1, 0.0, 0.0, 0.0"/>
+                <Kinematics status="LINEARIZED" validChecksum="true">
+                <deltaTheta value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <a value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <d value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <alpha value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+                <jointChecksum value="0, 0, 0, 0, 0, 0"/>
+              </Kinematics>
+              </position>
+              <BaseToFeature pose="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+            </Waypoint>
+          </children>
+        </Move>
+      </children>
+    </MainProgram>
+  </children>
+</URProgram>
