@@ -1,0 +1,310 @@
+<!-- Every node type on the PolyScope 5.26.1 node list, added once with default settings and saved
+     by URSim 5.26.1 (UR3 model). The calibration block and serial number are omitted; crcValue is URSim's stock safety checksum.
+     Unconfigured nodes show the XML PolyScope writes before anything is set up: for example
+     <Wait type="Undefined"/> and a Waypoint with no <position>. -->
+<URProgram name="nodes_templates" installation="default" installationRelativePath="default" directory="/ursim/programs" createdIn="5.26.1" lastSavedIn="5.26.1" robotSerialNumber="…" createdInPolyscopeProgramVersion="2" lastSavedInPolycopeProgramVersion="2" crcValue="2189851243">
+  <kinematics>…calibration block omitted…</kinematics>
+  <children>
+    <InitVariablesNode>
+      <variables>
+        <variable name="Pallet_1_cnt">
+          <expression>
+            <ExpressionChar character="1"/>
+          </expression>
+        </variable>
+        <variable name="Pallet_1_lct">
+          <expression>
+            <ExpressionChar character="1"/>
+          </expression>
+        </variable>
+        <variable name="Pallet_1_lno">
+          <expression>
+            <ExpressionChar character="1"/>
+          </expression>
+        </variable>
+        <variable name="Pallet_1_sep">
+          <expression>
+            <ExpressionToken token="False"/>
+          </expression>
+        </variable>
+        <variable name="Pallet_1_tct">
+          <expression>
+            <ExpressionChar character="1"/>
+          </expression>
+        </variable>
+        <variable name="SD_1_run">
+          <expression>
+            <ExpressionChar character="1"/>
+          </expression>
+        </variable>
+        <variable name="SD_1_tID">
+          <expression>
+            <ExpressionChar character="-"/>
+            <ExpressionChar character="1"/>
+          </expression>
+        </variable>
+        <variable name="qNearApproach">
+          <expression>
+            <ExpressionChar character="["/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character="]"/>
+          </expression>
+        </variable>
+      </variables>
+    </InitVariablesNode>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="true">
+      <children>
+        <Move motionType="MoveL" speed="0.25" acceleration="1.2" useActiveTCP="true" positionType="CartesianPose" optimoveEnabled="false" optiMoveSpeed="0.3" optiMoveAcceleration="0.09">
+          <feature class="GeomFeatureReference" referencedName="Joint_0_name"/>
+          <children>
+            <gui.program.direction.MoveDirectionNode selectedDirection="XPlus">
+              <children>
+                <Until type="NONE" allowActions="false"/>
+              </children>
+            </gui.program.direction.MoveDirectionNode>
+            <Waypoint type="Fixed" name="Waypoint_2" kinematicsFlags="-1">
+              <motionParameters/>
+            </Waypoint>
+            <Waypoint type="Fixed" name="Waypoint_1" kinematicsFlags="-1">
+              <motionParameters/>
+            </Waypoint>
+          </children>
+        </Move>
+        <Wait type="Undefined"/>
+        <Set type="Undefined"/>
+        <Popup type="Message" haltProgram="false" inputType="Text"/>
+        <Halt/>
+        <Comment/>
+        <Folder name="Folder" keepHidden="false">
+          <children>
+            <Placeholder/>
+          </children>
+        </Folder>
+        <SetPayload workpieceName="no_workpiece" payloadTransitionTime="0.05"/>
+        <Loop type="Forever">
+          <children>
+            <Placeholder/>
+          </children>
+        </Loop>
+        <CallSubProgram/>
+        <Assignment valueSource="Expression">
+          <variable name="var_1" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+          <expression/>
+        </Assignment>
+        <If type="If" checkContinuously="false">
+          <expression/>
+          <children>
+            <Placeholder/>
+          </children>
+        </If>
+        <Script type="Line">
+          <expression/>
+        </Script>
+        <Switch>
+          <expression/>
+        </Switch>
+        <Timer action="Undefined">
+          <variable name="timer_1" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+        </Timer>
+        <SafeHome positionOptionType="SPEED_AND_ACCELERATION" speed="1.0471975511965976" acceleration="1.3962634015954636" nextMotionTime="2.0"/>
+        <Stack type="Undefined" itemThickness="0.0" motionType="MoveL" speed="0.25" acceleration="1.2" useActiveTCP="true" positionType="CartesianPose" optimoveEnabled="false" optiMoveSpeed="0.3" optiMoveAcceleration="0.09">
+          <nextPositionExpression/>
+          <foundPoseVariable name="pose_1" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </foundPoseVariable>
+          <feature class="GeomFeatureReference" reference="../../Move/feature"/>
+        </Stack>
+        <Force type="Simple">
+          <feature reference="../../Move/feature"/>
+          <selection value="0, 0, 1, 0, 0, 0"/>
+          <wrench value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+          <limitsForce value="0.15, 0.15, 0.15, 1.0471975511965976, 1.0471975511965976, 1.0471975511965976"/>
+          <limitsMotion value="0.1, 0.1, 0.1, 0.3490658503988659, 0.3490658503988659, 0.3490658503988659"/>
+          <children>
+            <Placeholder/>
+          </children>
+        </Force>
+        <Contributed strategyClass="PalletNode" strategyProgramNodeType="Palletizing" strategyURCapDeveloper="Universal Robots" strategyURCapName="polyscope-pallet-impl">
+          <dataModel>
+            <data key="palletFeature" value="Base"/>
+            <data key="isPalletizing" value="true"/>
+            <Variable key="referencePoint">
+              <variable featureName="referencePoint"/>
+            </Variable>
+            <Variable key="separatorPoint">
+              <variable featureName="separatorPoint"/>
+            </Variable>
+            <Variable key="qNearApproach">
+              <variable name="qNearApproach" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionChar character="["/>
+                  <ExpressionChar character="0"/>
+                  <ExpressionChar character=","/>
+                  <ExpressionChar character="0"/>
+                  <ExpressionChar character=","/>
+                  <ExpressionChar character="0"/>
+                  <ExpressionChar character=","/>
+                  <ExpressionChar character="0"/>
+                  <ExpressionChar character=","/>
+                  <ExpressionChar character="0"/>
+                  <ExpressionChar character=","/>
+                  <ExpressionChar character="0"/>
+                  <ExpressionChar character="]"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+            <Variable key="name">
+              <variable name="Pallet_1" prefersPersistentValue="false" favourite="false">
+                <initializeExpression/>
+              </variable>
+            </Variable>
+            <Variable key="globalCountingVariable">
+              <variable name="Pallet_1_cnt" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionChar character="1"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+            <Variable key="layerNumberVariable">
+              <variable name="Pallet_1_lno" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionChar character="1"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+            <Variable key="layerCountingVariable">
+              <variable name="Pallet_1_lct" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionChar character="1"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+            <Variable key="handleSeparatorVariable">
+              <variable name="Pallet_1_sep" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionToken token="False"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+            <Variable key="totalCountVariable">
+              <variable name="Pallet_1_tct" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionChar character="1"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+          </dataModel>
+          <state isChildrenLocked="true"/>
+          <children>
+            <Contributed strategyClass="PatternsNode" strategyProgramNodeType="Patterns" strategyURCapDeveloper="Universal Robots" strategyURCapName="polyscope-pallet-impl">
+              <dataModel/>
+              <state isChildrenLocked="true"/>
+              <children>
+                <Placeholder/>
+              </children>
+            </Contributed>
+            <Contributed strategyClass="LayersNode" strategyProgramNodeType="Layers" strategyURCapDeveloper="Universal Robots" strategyURCapName="polyscope-pallet-impl">
+              <dataModel/>
+            </Contributed>
+            <Contributed strategyClass="AtEachPositionNode" strategyProgramNodeType="At Each Item" strategyURCapDeveloper="Universal Robots" strategyURCapName="polyscope-pallet-impl">
+              <dataModel>
+                <data key="currentWizardState" value="SHOW_INFO"/>
+              </dataModel>
+              <children>
+                <Placeholder/>
+              </children>
+            </Contributed>
+          </children>
+        </Contributed>
+        <Contributed strategyClass="ConveyorTracking" strategyProgramNodeType="Conveyor Tracking" strategyURCapDeveloper="Universal Robots" strategyURCapName="Conveyor Tracking">
+          <dataModel/>
+          <children>
+            <Placeholder/>
+          </children>
+        </Contributed>
+        <Contributed strategyClass="ScrewdrivingProgramNode" strategyProgramNodeType="Screwdriving" strategyURCapDeveloper="Universal Robots" strategyURCapName="polyscope-screwdriving-impl">
+          <dataModel>
+            <data key="isTightening" value="true"/>
+            <data key="followScrewmode" value="FORCE"/>
+            <Variable key="name">
+              <variable name="SD_1" prefersPersistentValue="false" favourite="false">
+                <initializeExpression/>
+              </variable>
+            </Variable>
+            <Variable key="moveThreadVariable">
+              <variable name="SD_1_td" prefersPersistentValue="false" favourite="false">
+                <initializeExpression/>
+              </variable>
+            </Variable>
+            <Variable key="moveThreadIDVariable">
+              <variable name="SD_1_tID" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionChar character="-"/>
+                  <ExpressionChar character="1"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+            <Variable key="timeVariable">
+              <variable name="SD_1_time" prefersPersistentValue="false" favourite="false">
+                <initializeExpression/>
+              </variable>
+            </Variable>
+            <Variable key="screwPositionVariable">
+              <variable name="SD_1_pos" prefersPersistentValue="false" favourite="false">
+                <initializeExpression/>
+              </variable>
+            </Variable>
+            <Variable key="screwDistanceVariable">
+              <variable name="SD_1_dist" prefersPersistentValue="false" favourite="false">
+                <initializeExpression/>
+              </variable>
+            </Variable>
+            <Variable key="continueScrewDrivingVariable">
+              <variable name="SD_1_run" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionChar character="1"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+          </dataModel>
+          <state isChildrenLocked="true"/>
+          <children>
+            <Contributed strategyClass="ScrewdrivingHandlersNode" strategyProgramNodeType="Until" strategyURCapDeveloper="Universal Robots" strategyURCapName="polyscope-screwdriving-impl">
+              <dataModel>
+                <data key="successHandlerOnly" value="true"/>
+              </dataModel>
+              <children>
+                <Comment comment="Add actions for this handler below"/>
+              </children>
+            </Contributed>
+          </children>
+        </Contributed>
+      </children>
+    </MainProgram>
+    <Event>
+      <expression/>
+      <children>
+        <Placeholder/>
+      </children>
+    </Event>
+    <Thread name="Thread_1" runOnlyOnce="false">
+      <children>
+        <Placeholder/>
+      </children>
+    </Thread>
+  </children>
+</URProgram>

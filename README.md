@@ -23,7 +23,7 @@ skills/ur-urp-programs/
     dashboard.py                 minimal Dashboard Server client (port 29999)
     pendant_ui.sh                send clicks/keys to URSim's pendant over VNC and take a screenshot
     posemath.py                  pose_trans / pose_inv / rotation-vector maths (numpy)
-examples/                        a synthetic example recording (not real data)
+examples/                        a synthetic recording, and PolyScope's default XML for every node type (5.26.1)
 tests/                           pytest suite using synthetic fixtures only
 ```
 
