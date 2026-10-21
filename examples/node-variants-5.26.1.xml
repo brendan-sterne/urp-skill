@@ -278,4 +278,118 @@
     </Thread>
   </children>
   </Program>
+  <!-- adv_rest: operator-input Assignments (Boolean/Integer/Float/String), function and pose-constant expressions, Set with an
+       expression, Set increment + Set TCP, Event and Thread bodies, Until with an action -->
+  <Program source="adv_rest">
+    <children>
+    <InitVariablesNode/>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="false">
+      <children>
+        <Assignment valueSource="Operator" message="msg_bool" valueType="Boolean">
+          <variable name="var_1" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+        </Assignment>
+        <Assignment valueSource="Operator" message="msg_int" valueType="Integer">
+          <variable name="var_2" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+        </Assignment>
+        <Assignment valueSource="Operator" message="msg_float" valueType="Float">
+          <variable name="var_3" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+        </Assignment>
+        <Assignment valueSource="Operator" message="msg_text" valueType="String">
+          <variable name="var_4" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+        </Assignment>
+        <Assignment valueSource="Expression">
+          <variable name="var_5" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+          <expression>
+            <ExpressionToken token="get_actual_tcp_pose"/>
+            <ExpressionChar character="("/>
+            <ExpressionChar character=")"/>
+          </expression>
+        </Assignment>
+        <Assignment valueSource="Expression">
+          <variable name="var_6" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+          <expression>
+            <ExpressionGeomFeature>
+              <feature referencedName="back_wall"/>
+            </ExpressionGeomFeature>
+          </expression>
+        </Assignment>
+        <Set type="ExpressionOutput">
+          <pin referencedName="digital_out[0]"/>
+          <expression>
+            <ExpressionChar character="v"/>
+            <ExpressionChar character="a"/>
+            <ExpressionChar character="r"/>
+            <ExpressionChar character="_"/>
+            <ExpressionChar character="1"/>
+            <ExpressionChar character="&gt;"/>
+            <ExpressionChar character="2"/>
+          </expression>
+        </Set>
+        <Set type="IncrementVariable">
+          <tcp referencedName="hande"/>
+          <installationVariable name="i_var_1"/>
+        </Set>
+      </children>
+    </MainProgram>
+    <Event>
+      <expression>
+        <ExpressionChar character="v"/>
+        <ExpressionChar character="a"/>
+        <ExpressionChar character="r"/>
+        <ExpressionChar character="_"/>
+        <ExpressionChar character="1"/>
+        <ExpressionChar character="&gt;"/>
+        <ExpressionChar character="0"/>
+      </expression>
+      <children>
+        <Move motionType="MoveJ" speed="1.0471975511965976" acceleration="1.3962634015954636" useActiveTCP="true" positionType="CartesianPose" optimoveEnabled="false" optiMoveSpeed="0.3" optiMoveAcceleration="0.09">
+          <feature class="GeomFeatureReference" referencedName="Joint_0_name"/>
+          <children>
+            <Waypoint type="Fixed" name="Waypoint_1" kinematicsFlags="-1">
+              <motionParameters/>
+            </Waypoint>
+          </children>
+        </Move>
+        <Comment/>
+        <Popup type="Message" haltProgram="false" inputType="Text"/>
+      </children>
+    </Event>
+    <Thread name="Thread_1" runOnlyOnce="false">
+      <children>
+        <Wait type="Undefined"/>
+        <Move motionType="MoveL" speed="0.25" acceleration="1.2" useActiveTCP="true" positionType="CartesianPose" optimoveEnabled="false" optiMoveSpeed="0.3" optiMoveAcceleration="0.09">
+          <feature class="GeomFeatureReference" reference="../../../../Event/children/Move/feature"/>
+          <children>
+            <gui.program.direction.MoveDirectionNode selectedDirection="XPlus">
+              <children>
+                <Until type="DISTANCE" allowActions="true" deceleration="3.0" distanceNodeType="STOP">
+                  <Distance>-1.0</Distance>
+                  <motionParameters blendRadius="0.0"/>
+                  <children>
+                    <Popup type="Message" haltProgram="false" inputType="Text"/>
+                  </children>
+                </Until>
+              </children>
+            </gui.program.direction.MoveDirectionNode>
+            <Waypoint type="Fixed" name="Waypoint_2" kinematicsFlags="-1">
+              <motionParameters/>
+            </Waypoint>
+          </children>
+        </Move>
+      </children>
+    </Thread>
+  </children>
+  </Program>
 </NodeVariants>
