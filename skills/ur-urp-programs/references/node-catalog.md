@@ -60,7 +60,57 @@ declared, inside their node.
 | Conveyor Tracking | `<Contributed strategyClass="ConveyorTracking" strategyProgramNodeType="Conveyor Tracking" strategyURCapDeveloper="Universal Robots" strategyURCapName="Conveyor Tracking">` | Shown as "(disabled)" in the tree until a conveyor is configured |
 | Screwdriving | `<Contributed strategyClass="ScrewdrivingProgramNode" strategyProgramNodeType="Screwdriving" strategyURCapDeveloper="Universal Robots" strategyURCapName="polyscope-screwdriving-impl">` with variables `SD_1`, `SD_1_td`, `SD_1_tID` (-1), `SD_1_time`, `SD_1_pos`, `SD_1_dist`, `SD_1_run` (1) and an `Until` Contributed child holding a `Comment` | Warns that a Start I/O and TCP must be defined in the installation |
 
+## Configured variants (URSim 5.26.1, 2026-10-21)
+Each variant was set up in the UI, saved, and read back.
+
+**Wait**
+| UI option | XML |
+|---|---|
+| Wait N seconds | `<Wait type="Sleep"><waitTime>0.01</waitTime></Wait>` |
+| Wait for Digital Input | `<Wait type="DigitalInput"><pin referencedName="digital_in[0]"/><digitalValue>0</digitalValue></Wait>` (Low = 0) |
+| Wait for Analog Input | `<Wait type="AnalogInput"><analogComparison>0</analogComparison><analogValue>4.0</analogValue></Wait>` (the input pin is added when one is chosen) |
+| Wait for expression | `<Wait type="Condition"><expression/></Wait>` |
+| No Wait | `<Wait type="NoWait"/>` |
+
+The pin is always stored under its **canonical name** (`digital_in[0]`), even when you pick a user-named input such as
+`switch1` from the dropdown. The installation maps names to pins.
+
+**Set**
+| UI option | XML |
+|---|---|
+| Set Digital Output | `<Set type="DigitalOutput"><pin referencedName="digital_out[2]"/><digitalValue>1</digitalValue></Set>` (named output `conveyor_on` is `digital_out[2]`; High/On = 1) |
+| Set Analog Output | `<Set type="AnalogOutput"><pin referencedName="analog_out[0]"/><analogValue>4.0</analogValue></Set>` |
+| Set Single Pulse | `<Set type="SingleDigitalPulseActionState"><SingleDigitalPulseActionState hiPulseInSeconds="0.5"><pin referencedName="digital_out[0]"/></SingleDigitalPulseActionState></Set>` |
+| other options | "Set `<Output>` to f(x)", "Increment installation variable by one" and the "Set TCP" checkbox were seen in the UI but not saved |
+
+**Popup:** `<Popup type="Warning" haltProgram="true" message="hello" inputType="Text"/>`. Types: Message, Warning, Error;
+"Halt program execution at this popup" is `haltProgram`.
+
+**Loop**
+| UI option | XML |
+|---|---|
+| Loop always | `<Loop type="Forever">` |
+| Loop X times | `<Loop type="Counting" count="0"><loopVariable name="Loop_1" .../>...` |
+| Loop when expression is True | `<Loop type="While" checkContinuously="true"><expression/>...` |
+
+**If / Else:** "Add ElseIf" and "Add Else" create **sibling** nodes, not nested ones: `<If type="If">`,
+`<If type="ElseIf">`, `<If type="Else">`, each with `checkContinuously="false"`, `<expression/>` and a `<children>`
+(an empty one holds `<Placeholder/>`). Even `Else` carries an empty `<expression/>`.
+
+**Waypoint types** (dropdown: Fixed, Relative, Variable position)
+- Taught Fixed waypoint (after "Set Waypoint"): `<Waypoint type="Fixed" name="Waypoint_2" kinematicsFlags="4"><motionParameters/><position><JointAngles .../><TCPOffset .../><Kinematics .../></position><BaseToFeature .../></Waypoint>`. `kinematicsFlags` is `4` for a taught waypoint, `-1` for an untaught one.
+- Relative: `<Waypoint type="Relative" ...>` holds `<relativeFromPosition>` (JointAngles, TCPOffset, Kinematics) and `<position>` (the "to" point), both taught with "Set Point". The script moves by `to_p - from_p` from the current pose.
+- Variable position was in the dropdown but not configured.
+
+**Move with a feature.** Dropdown choices were Base, Tool and the installation's point features. The XML change is
+only `<feature referencedName="back_wall"/>`. See `features.md` for what that does to taught waypoints (it
+reinterprets them unless `BaseToFeature` is set accordingly).
+
+**Teaching in URSim.** "Set Waypoint" / "Set Point" need the simulated robot powered on (power button, ON, then START;
+the dashboard shows `POWER_OFF` until then). The Move screen then accepts the current pose with OK, and jogging
+needs the arrow held down (press and hold the mouse button for a few seconds).
+
 ## Not yet explored
-The variants of Wait, Set, Popup, Waypoint (Relative/Variable), Move (features, TCP, blend), Direction `Until`
-conditions, Loop (While/count), If/Else, Switch cases, Timer actions, Script (file), Assignment (operator input),
-SubProgram definitions, URCap nodes, and the "Add Before Start Sequence" option.
+Variable position, Direction `Until` conditions, Switch cases, Timer actions, Script from file, Assignment (operator
+input), SubProgram definitions, "Set `<Output>` to f(x)", "Add Before Start Sequence", Move options (TCP, optimized
+motion controls, blend radius), and URCap nodes other than the built-in templates.

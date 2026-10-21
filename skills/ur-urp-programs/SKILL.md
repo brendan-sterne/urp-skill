@@ -50,8 +50,10 @@ Generated or edited programs **move a real robot arm**. Always:
 - `.urp` = gzip XML. Root `<URProgram>` with a `<kinematics>` calibration block and a `<children>` tree:
   `InitVariablesNode`, optional `SpecialSequence type="BeforeStart"`, `MainProgram`, optional `Thread`s and
   `SubProgram`s. Expressions are stored one character per element.
-- A waypoint stores `JointAngles`, a `TCPOffset` and a `BaseToFeature` pose. It does **not** store a pose in
-  the feature's frame; that is derived as `pose_trans(pose_inv(BaseToFeature), pose_in_base)`.
+- A waypoint stores `JointAngles`, a `TCPOffset` and a `BaseToFeature` pose, not a pose in the feature's frame.
+  PolyScope commands `pose_trans(feature_now, pose_trans(pose_inv(BaseToFeature), waypoint_pose_in_base))`.
+  So switching a Move's feature after teaching shifts the path unless `BaseToFeature` is set to that feature's
+  pose (`make_feature_relative.py` does this; verified against PolyScope's own script generator).
 - The generated `.script` next to a program is the best source of numbers: it defines each feature as
   `global NAME=p[...]` and each waypoint's base-frame TCP pose as `<waypoint>_p=p[...]`.
 - A `Script type="File"` node caches the file's text inside the `.urp` (`cachedContents`), so editing the

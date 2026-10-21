@@ -81,8 +81,9 @@ Inside `<children>`, in order: `InitVariablesNode`, optional `SpecialSequence ty
 | `Script` | see below |
 | `Contributed strategyProgramNodeType="..."` | URCap-provided node |
 
-`kinematicsFlags`: values `4` and `-1` were seen. How PolyScope chooses them was not determined; generators
-here copy the value from a real waypoint.
+`kinematicsFlags`: `-1` is a waypoint that has not been taught (it has no `<position>`), and `4` is a taught
+waypoint (seen on every taught waypoint, from real robots and URSim). Other values were not seen; generators here
+write `4` for waypoints with joint angles.
 
 ## Expressions
 Stored one character per element: `<ExpressionChar character="0"/>`, with

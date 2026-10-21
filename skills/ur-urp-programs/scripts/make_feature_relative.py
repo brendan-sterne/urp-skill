@@ -16,6 +16,10 @@ change, so the arm goes to the same physical places until the feature is re-taug
 feature's pose (`global NAME=p[...]`) and each waypoint's base-frame TCP pose (`<wp>_p`),
 which are used for the printed table of poses in the feature frame.
 
+PolyScope commands pose_trans(feature_now, pose_trans(pose_inv(BaseToFeature), waypoint_pose_in_base)), so with
+BaseToFeature set to the feature's pose the target equals the original base-frame target. Verified against
+PolyScope's own regenerated script in URSim (see references/features.md).
+
 Output is a NEW file. Review the printed change summary, then open it in PolyScope.
 """
 import argparse
