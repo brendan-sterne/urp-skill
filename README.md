@@ -13,7 +13,8 @@ An **unofficial** agent skill (and a few small Python tools) for working with Un
 ```
 skills/ur-urp-programs/
   SKILL.md                       the skill (for Claude Code and other agents that read SKILL.md)
-  references/                    format notes, features, robot access, URScript notes, version matrix
+  references/                    format notes, node catalog (every node and variant), features, URCaps, URSim,
+                                 robot access, URScript notes, version matrix
   scripts/
     urp_tools.py                 unpack / pack / outline a .urp
     make_feature_relative.py     make one Move relative to a feature; prints waypoints in its frame
@@ -32,13 +33,18 @@ tests/                           pytest suite using synthetic fixtures only
 Honest summary (details in [`references/version-matrix.md`](skills/ur-urp-programs/references/version-matrix.md)):
 
 - **Verified** on programs saved by PolyScope 5.13.1, 5.25.1 and 5.26.1: the file is gzip XML with the same
-  layout; node and field meanings listed in `references/format.md`; how feature-relative waypoints are stored;
-  that `crcValue` is the robot's safety checksum; what PolyScope rewrites on save; that the scripts produce
-  exactly the intended diff.
-- **Verified in URSim 5.26.1**: PolyScope's loader accepts the programs these tools generate, and rejects
-  corrupt files (with negative controls).
-- **Not yet confirmed**: that a generated program opens and looks right on a pendant, or runs as intended.
+  layout; node and field meanings (`references/format.md`, `references/node-catalog.md`); how feature-relative
+  waypoints are stored and what PolyScope does with them; that `crcValue` is the robot's safety checksum; what
+  PolyScope rewrites on save; how expressions and back-references are encoded; that the scripts produce exactly the
+  intended diff.
+- **Verified in URSim 5.26.1**: PolyScope's loader accepts the programs these tools generate and rejects corrupt
+  files (with negative controls); a feature-converted program opens in the program tree, and PolyScope's own
+  regenerated script commands the original targets.
+- **Not yet confirmed**: that a generated program looks right on a **physical** pendant, or runs as intended.
   Please try it with the speed slider low and tell us what happens (open an issue with your PolyScope version).
+- Third-party URCaps: External Control and Schmalz install in URSim and their nodes work; the Robotiq and OnRobot
+  URCaps fail at startup in URSim, so their node XML has to come from programs saved on a real robot
+  (`references/urcaps.md`).
 - PolyScope X (`.urpx`) is out of scope.
 
 ## Use as a Claude Code skill
@@ -56,6 +62,7 @@ The scripts use Python 3 and `numpy` (`pip install numpy`); tests use `pytest`.
 
 ```
 python3 skills/ur-urp-programs/scripts/urp_tools.py outline my_program.urp
+python3 skills/ur-urp-programs/scripts/ursim_load_check.py --programs-dir ~/ursim-programs my_program.urp
 
 python3 skills/ur-urp-programs/scripts/make_feature_relative.py my_program.urp my_program.script --list
 python3 skills/ur-urp-programs/scripts/make_feature_relative.py my_program.urp my_program.script \
@@ -63,7 +70,7 @@ python3 skills/ur-urp-programs/scripts/make_feature_relative.py my_program.urp m
 
 python3 skills/ur-urp-programs/scripts/record_path.py --host 192.0.2.10 --out path.json
 python3 skills/ur-urp-programs/scripts/build_movej_program.py path.json template_from_your_robot.urp \
-    replay.urp --name replay
+    replay.urp --name replay        # add --safety-checksum "XXXX XXXX" (the pendant's corner code) if it changed
 ```
 
 `template_from_your_robot.urp` must be a program saved by PolyScope on the **same** robot; it supplies the
