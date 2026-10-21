@@ -18,12 +18,45 @@ Observed on programs saved by PolyScope 5.25.1. Not an official specification.
            directory="/programs" createdIn="5.25.1" lastSavedIn="5.25.1"
            robotSerialNumber="..." crcValue="...">
 ```
-- `crcValue` is **not** a hash of the program: different programs saved in the same session carry the same
-  number. What it is derived from is unknown. When generating a program, copy it from a program saved
-  recently on the same robot.
+- `crcValue` is the robot's **safety checksum** (the value the pendant shows in the top-right corner as two
+  groups of four hex digits, for example `8286 7A6B`) written as an unsigned 32-bit decimal
+  (`0x82867A6B` = `2189851243`). It is not a hash of the program: it is identical for every program saved
+  while the safety configuration is unchanged, and it changes when the installation's safety settings
+  change. Confirmed in URSim with a controlled pair (same program saved under two installations gave two
+  values, and each equalled the corner code shown for that installation), and consistent with files from two
+  real robots, whose values changed in steps as their safety configurations changed. When generating a
+  program, use the current safety checksum of the target robot: read it from the pendant corner, or copy it
+  from a program saved on that robot since its last safety change. URSim loaded files whose `crcValue` did
+  not match its own without complaint (what a physical pendant does on a mismatch was not tested).
 - `<kinematics>` is the robot's calibration (`deltaTheta`, `a`, `d`, `alpha`, `jointChecksum`) and is
   repeated inside every waypoint. It is most of the file's size. Its numbers do not match nominal DH
   parameters, so do not use them for forward kinematics (use the generated `.script`, below).
+
+## What PolyScope rewrites when it saves
+Observed by loading a real program in URSim 5.26.1 and saving it unchanged through the UI:
+- `crcValue` becomes the current robot's safety checksum (see above); `robotSerialNumber` becomes the
+  current robot's; `lastSavedIn` becomes the current version while `createdIn` keeps the original.
+- `directory` becomes the real folder and `installationRelativePath` is recomputed relative to the program's
+  folder (for example `../default` for a program saved one folder below the installation).
+- The top-level `<kinematics>` becomes the current robot's calibration. A waypoint's `<Kinematics>` keeps the
+  calibration it was taught with.
+- Saving again without changes is stable (same `crcValue`, same content). Floating-point values are
+  re-formatted (`-0.34945677303969` became `-0.3494567730396901`), so do not compare text across saves.
+- Companion files `name.script` and `name.txt` are written, and the `*` modified marker clears.
+- The `*` marker after a program name also appears when a real, known-good program is loaded, so it does not
+  mean the file is bad.
+
+## Back-references
+PolyScope serializes repeated objects with XStream-style references. A waypoint's `<Kinematics>` is written as
+`<Kinematics reference="../../../../../../../../kinematics"/>` when it equals the robot's current top-level
+calibration, and as an explicit block when it does not (18 explicit and 1 reference in one real program; all
+explicit after saving under a different calibration). A Move's `<feature>` can likewise be a relative-path
+`reference`. Both forms are valid; a generator can always write the explicit form.
+
+## Container across versions
+Programs saved by PolyScope 5.13.1, 5.25.1 and 5.26.1 were all gzip-compressed XML with the same root element
+and tree layout. `createdInPolyscopeProgramVersion` was `0` or `2` and `lastSavedInPolycopeProgramVersion`
+was `2` (the attribute name really is spelled "Polycope").
 
 ## Program tree
 Inside `<children>`, in order: `InitVariablesNode`, optional `SpecialSequence type="BeforeStart"` (runs once),
@@ -42,6 +75,8 @@ Inside `<children>`, in order: `InitVariablesNode`, optional `SpecialSequence ty
 | `Folder name="..." keepHidden="false"` | grouping; children go in `<children>` |
 | `Comment comment="..."` | annotation, for example `<Comment comment="empty for now"/>` |
 | `Popup`, `Halt` | message and stop |
+| `Wait type="Sleep"` | child `<waitTime>` holds the duration |
+| `Placeholder` | an unfinished node left in the tree (seen as a program's only node) |
 | `SuppressedNode` | wraps a disabled node; the original is under `suppressedNode class="..."` |
 | `Script` | see below |
 | `Contributed strategyProgramNodeType="..."` | URCap-provided node |

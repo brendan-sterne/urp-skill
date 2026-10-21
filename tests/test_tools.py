@@ -209,3 +209,81 @@ def test_recorder_starts_on_motion_and_stops_when_still(tmp_path):
     assert wps[0]["q"][0] == pytest.approx(0.5)             # first = resting pose
     assert wps[-1]["q"][0] == pytest.approx(0.8, abs=1e-3)  # last = final resting pose
     assert all(abs(w["tcp"][0] - 0.4) <= 0.15 + 1e-6 for w in wps)
+
+
+# ---- dashboard + URSim load check, against a fake dashboard server -------------------------------
+def _fake_dashboard(programs_dir):
+    """Mimics URSim's replies: gzip-parseable files load, anything else is an error and the
+    previously loaded program stays loaded."""
+    import gzip as _gz
+    import socket
+    import threading
+
+    srv = socket.socket()
+    srv.bind(("127.0.0.1", 0))
+    srv.listen(5)
+    state = {"loaded": None}
+
+    def handle(conn):
+        conn.sendall(b"Connected: Universal Robots Dashboard Server\n")
+        f = conn.makefile("rwb")
+        for raw in f:
+            cmd = raw.decode().strip()
+            if cmd.startswith("load "):
+                rel = cmd[5:]
+                path = pathlib.Path(programs_dir) / rel
+                try:
+                    ET.fromstring(_gz.decompress(path.read_bytes()))
+                    state["loaded"] = "/ursim/programs/" + rel
+                    reply = f"Loading program: /ursim/programs/{rel}, /ursim/programs/default.installation"
+                except Exception:
+                    reply = f"Error while loading program: /ursim/programs/{rel}: unknown failure"
+            elif cmd == "get loaded program":
+                reply = f"Loaded program: {state['loaded']}"
+            else:
+                reply = "?"
+            f.write((reply + "\n").encode())
+            f.flush()
+
+    def serve():
+        while True:
+            try:
+                conn, _ = srv.accept()
+            except OSError:
+                return
+            threading.Thread(target=handle, args=(conn,), daemon=True).start()
+
+    threading.Thread(target=serve, daemon=True).start()
+    return srv
+
+
+def test_dashboard_session(tmp_path):
+    import dashboard
+    srv = _fake_dashboard(tmp_path)
+    greeting, out = dashboard.session("127.0.0.1", srv.getsockname()[1], ["get loaded program"], timeout=2)
+    assert greeting.startswith("Connected:") and out[0][1].startswith("Loaded program")
+    srv.close()
+
+
+def test_ursim_load_check_accepts_good_and_rejects_bad(tmp_path):
+    srv = _fake_dashboard(tmp_path)
+    port = srv.getsockname()[1]
+    good = tmp_path / "good.urp"
+    urp_tools.write_urp(TEMPLATE, good)
+    bad = tmp_path / "bad.urp"
+    bad.write_bytes(good.read_bytes()[:50])             # truncated gzip
+    r = run(SCRIPTS / "ursim_load_check.py", "--programs-dir", tmp_path, "--host", "127.0.0.1",
+            "--port", port, "--settle", "0.1", good, bad)
+    assert "ACCEPTED" in r.stdout and "good.urp" in r.stdout, r.stdout + r.stderr
+    assert "REJECTED" in r.stdout and "bad.urp" in r.stdout, r.stdout
+    assert "rejected as expected" in r.stdout            # negative controls worked
+    assert r.returncode == 1                             # one file failed
+    srv.close()
+
+
+def test_safety_checksum_sets_crcvalue():
+    wps = json.load(open(RECORDING))["waypoints"]
+    xml, _ = build_movej_program.build(wps, TEMPLATE, "x", 0.003, 0.5, 0.5, 0.5, safety_checksum="8286 7A6B")
+    assert ET.fromstring(xml).get("crcValue") == "2189851243"          # 0x82867A6B
+    xml2, _ = build_movej_program.build(wps, TEMPLATE, "x", 0.003, 0.5, 0.5, 0.5, safety_checksum="DEADBEEF")
+    assert ET.fromstring(xml2).get("crcValue") == "3735928559"         # 0xDEADBEEF

@@ -40,7 +40,10 @@ Generated or edited programs **move a real robot arm**. Always:
    - `scripts/record_path.py` + `scripts/build_movej_program.py` turn a hand-guided path into one `MoveJ`.
 4. **Verify.** The scripts parse the XML, check the diff size and refuse to overwrite inputs. Add your own
    check (for example, waypoints that should lie on a plane should have z of about 0 in that plane's frame).
-5. **Hand over** as a new file, with the checklist in rule 2.
+5. **Check that PolyScope's loader accepts it**, if URSim is available: `scripts/ursim_load_check.py` loads the
+   file in URSim and runs negative controls so a pass means something (`references/ursim.md`). This shows the
+   file parses; it does not show it looks right on a pendant or is right for your robot.
+6. **Hand over** as a new file, with the checklist in rule 2.
 
 ## Key facts (details in `references/`)
 
@@ -53,6 +56,10 @@ Generated or edited programs **move a real robot arm**. Always:
   `global NAME=p[...]` and each waypoint's base-frame TCP pose as `<waypoint>_p=p[...]`.
 - A `Script type="File"` node caches the file's text inside the `.urp` (`cachedContents`), so editing the
   `.script` file outside PolyScope leaves the cache stale.
+- `crcValue` in the header is the robot's **safety checksum** (the corner code on the pendant, hex to decimal),
+  not a hash of the program. Use the target robot's current value when generating a program.
+- Saving through PolyScope rewrites the header, kinematics and float formatting (see `references/format.md`),
+  so compare programs structurally, not as text.
 - Poses are `[x, y, z, rx, ry, rz]`: meters and an axis-angle rotation vector in radians (not roll/pitch/yaw).
 
 ## Files in this skill
@@ -60,7 +67,8 @@ Generated or edited programs **move a real robot arm**. Always:
 - `references/format.md`: node types, expressions, Script nodes, URCaps, checksums.
 - `references/features.md`: feature references, `BaseToFeature`, converting a Move, getting poses.
 - `references/robot-access.md`: network, dashboard, SSH and `scp` gotchas, real-time packet layout.
+- `references/ursim.md`: running URSim, checking that PolyScope accepts a file, and driving the pendant over VNC.
 - `references/urscript-notes.md`: pose functions and snippets that came up while doing this.
 - `references/version-matrix.md`: what was verified, on which PolyScope version, and what was not.
 - `scripts/`: `urp_tools.py`, `make_feature_relative.py`, `record_path.py`, `build_movej_program.py`,
-  `posemath.py` (Python 3, numpy for the pose maths).
+  `ursim_load_check.py`, `dashboard.py`, `pendant_ui.sh`, `posemath.py` (Python 3, numpy for the pose maths).
