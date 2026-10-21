@@ -51,17 +51,32 @@ positions. A palletizing program is therefore not portable between robots, and e
 3. A **URCaps** category appears in the Program tab's node list with each URCap's nodes.
 4. Add the nodes, save, unpack and diff as for any other node (`ursim.md`).
 
-Verified with External Control 1.0.5, Schmalz Gripper 4.4.2 and Robotiq_Grippers 3.48.0.160259, both taken from a real robot's `/root/.urcaps/`
+Verified with External Control 1.0.5 and Schmalz Gripper 4.4.2 (reliably) and Robotiq_Grippers 3.48.0.160259 (first boot only), both taken from a real robot's `/root/.urcaps/`
 (on e-Series the installed bundles are `.jar` files there; other vendors install elsewhere). Alternatively install
 through PolyScope: Settings > System > URCaps, the `+` button, then restart PolyScope.
 
 **Robotiq in URSim.** The Robotiq bundle's activator fails in URSim (`GripperActivator.start` throws a
 `NullPointerException` in `PolyscopeIocModule.configure`, and the log shows `Unable to load properties
 /root/robotiq/gripper/commandRanges.properties` and `Connection refused` to its gripper driver), but the URCap still adds
-its toolbar icon and four nodes (Grip Check, Gripper Activate, Gripper, Vacuum), which can be added and saved. The XML
+its toolbar icon and, **on the first boot after installing it**, four nodes (Grip Check, Gripper Activate, Gripper, Vacuum),
+which could be added and saved. On later boots (with another URCap added or removed, and with the URCap's
+`/root/robotiq` state directory reset) the nodes were **not** listed and PolyScope showed a pendant dialog,
+"Unhandled exception in URCap: NullPointerException" naming Robotiq_Grippers 3.48.0.160259. This was not reproduced, so
+treat Robotiq nodes in URSim as unreliable. The XML
 differs from a real robot's: an unconfigured Gripper node had only `positionInDouble`, `forceInDouble` and `speedInDouble`,
 while real programs also hold `position`, `force`, `speed`, `slaveIds`, `blocking` and `robotCompliant`, which come from the
 connected gripper. **Copy Robotiq nodes from a program saved on the real robot rather than from URSim.**
+
+**OnRobot in URSim.** OnRobot URCap 6.7.2 (`com.onrobot.urcap.unified`, a `.urcap` that needs the `.jar` rename) installs, logs
+`OnRobot URCap started`, and then its activator fails (`NullPointerException` in `Activator.logPolyscopeVersion`,
+`Activator.java:130`, i.e. while reading the PolyScope version). It contributed **no nodes** to the node list, so its XML
+cannot be generated in URSim. Use the XML from programs saved on a real robot (2FG Grip/Release keys are in the table above).
+Both gripper vendors' bundles fail at startup on the PolyScope version or environment URSim provides, so hardware-vendor
+URCaps are generally a poor fit for URSim exploration; the URCaps that worked fully were External Control and Schmalz.
+
+**Removing a URCap from URSim.** The entrypoint only ever copies files into `/ursim/GUI/bundle/`, so removing a file from the
+mounted `/urcaps` folder does not uninstall it: also delete it from the container (`docker exec ursim rm
+/ursim/GUI/bundle/<file>.jar`) and restart.
 
 Limits: gripper URCaps will add and save nodes without hardware, but communication and installation screens do not
 work; a URCap built for an older URCap API may not load; and a program that uses a URCap that is not installed still

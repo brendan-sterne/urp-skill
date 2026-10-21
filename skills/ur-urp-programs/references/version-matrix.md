@@ -19,7 +19,7 @@ with your PolyScope version and results to extend this table.
 | PolyScope's own script for a feature-converted program commands the original targets | n/a | n/a | **verified** (worst difference 6.6e-13 m over 16 waypoints) |
 | A generated program **looks right on a physical pendant** | **not confirmed** | **not confirmed** | **not confirmed** |
 | A generated program runs and moves as intended | **not confirmed** | **not confirmed** | **not confirmed** |
-| URCap `.jar` files install in URSim from the `/urcaps` mount and their nodes appear in the node list | not tested | not tested | **verified** (External Control 1.0.5, Schmalz Gripper 4.4.2) |
+| URCap `.jar` files install in URSim from the `/urcaps` mount and their nodes appear in the node list | not tested | not tested | **verified** (External Control 1.0.5, Schmalz Gripper 4.4.2); Robotiq 3.48 nodes appeared only on the first boot; OnRobot 6.7.2 installs but contributes no nodes (activator fails) |
 | Uncompressed `.urp` accepted | not tested | not tested | not tested |
 | PolyScope X (`.urpx`) | out of scope | out of scope | out of scope |
 
