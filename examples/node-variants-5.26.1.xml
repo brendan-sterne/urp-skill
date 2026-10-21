@@ -1,0 +1,186 @@
+<!-- XML that PolyScope 5.26.1 (URSim) wrote for configured node variants. Each Program element holds the
+     <children> of a saved program; calibration blocks are stripped. See references/node-catalog.md. -->
+<NodeVariants version="5.26.1">
+  <!-- variants_io: Wait (5 types), Set (digital/analog/single pulse), Popup, Loop (Counting/While), If/ElseIf/Else -->
+  <Program source="variants_io">
+    <children>
+    <InitVariablesNode/>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="false">
+      <children>
+        <Wait type="Sleep">
+          <waitTime>0.01</waitTime>
+        </Wait>
+        <Wait type="DigitalInput">
+          <pin referencedName="digital_in[0]"/>
+          <digitalValue>0</digitalValue>
+        </Wait>
+        <Wait type="AnalogInput">
+          <analogComparison>0</analogComparison>
+          <analogValue>4.0</analogValue>
+        </Wait>
+        <Wait type="Condition">
+          <expression/>
+        </Wait>
+        <Wait type="NoWait"/>
+        <Set type="DigitalOutput">
+          <pin referencedName="digital_out[2]"/>
+          <digitalValue>1</digitalValue>
+        </Set>
+        <Set type="AnalogOutput">
+          <pin referencedName="analog_out[0]"/>
+          <analogValue>4.0</analogValue>
+        </Set>
+        <Set type="SingleDigitalPulseActionState">
+          <SingleDigitalPulseActionState hiPulseInSeconds="0.5">
+            <pin referencedName="digital_out[0]"/>
+          </SingleDigitalPulseActionState>
+        </Set>
+        <Popup type="Warning" haltProgram="true" message="hello" inputType="Text"/>
+        <Loop type="Counting" count="0">
+          <loopVariable name="Loop_1" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </loopVariable>
+          <children>
+            <Placeholder/>
+          </children>
+        </Loop>
+        <Loop type="While" checkContinuously="true">
+          <expression/>
+          <children>
+            <Placeholder/>
+          </children>
+        </Loop>
+        <If type="If" checkContinuously="false">
+          <expression/>
+          <children>
+            <Placeholder/>
+          </children>
+        </If>
+        <If type="ElseIf" checkContinuously="false">
+          <expression/>
+          <children>
+            <Placeholder/>
+          </children>
+        </If>
+        <If type="Else" checkContinuously="false">
+          <expression/>
+          <children>
+            <Placeholder/>
+          </children>
+        </If>
+      </children>
+    </MainProgram>
+  </children>
+  </Program>
+  <!-- variants_flow: BeforeStart, Switch with cases, Timer start/stop/reset, Assignment from operator, Call, SubProgram -->
+  <Program source="variants_flow">
+    <children>
+    <InitVariablesNode/>
+    <SpecialSequence type="BeforeStart">
+      <children>
+        <Placeholder/>
+      </children>
+    </SpecialSequence>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="false">
+      <children>
+        <Switch>
+          <expression/>
+          <children>
+            <Case caseValue="1">
+              <children>
+                <Placeholder/>
+              </children>
+            </Case>
+            <Case caseValue="2">
+              <children>
+                <Placeholder/>
+              </children>
+            </Case>
+            <Case caseValue="2147483647">
+              <children>
+                <Placeholder/>
+              </children>
+            </Case>
+          </children>
+        </Switch>
+        <Timer action="Start">
+          <variable name="timer_1" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+        </Timer>
+        <Timer action="Stop">
+          <variable name="timer_2" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+        </Timer>
+        <Timer action="Reset">
+          <variable name="timer_3" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+        </Timer>
+        <Assignment valueSource="Operator" valueType="Integer">
+          <variable name="var_1" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+        </Assignment>
+        <CallSubProgram/>
+      </children>
+    </MainProgram>
+    <SubProgram name="SubProgram_1" keepHidden="false" keepSynchronizedWithDisk="false">
+      <children>
+        <Placeholder/>
+      </children>
+    </SubProgram>
+  </children>
+  </Program>
+  <!-- variants_until: Direction with Until: distance, tool contact, I/O, expression -->
+  <Program source="variants_until">
+    <children>
+    <InitVariablesNode/>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="false">
+      <children>
+        <Move motionType="MoveL" speed="0.25" acceleration="1.2" useActiveTCP="true" positionType="CartesianPose" optimoveEnabled="false" optiMoveSpeed="0.3" optiMoveAcceleration="0.09">
+          <feature class="GeomFeatureReference" referencedName="Joint_0_name"/>
+          <children>
+            <gui.program.direction.MoveDirectionNode selectedDirection="XPlus">
+              <children>
+                <Until type="DISTANCE" allowActions="false" deceleration="3.0" distanceNodeType="STOP">
+                  <Distance>-1.0</Distance>
+                  <motionParameters blendRadius="0.0"/>
+                </Until>
+                <Until type="TOOL_CONTACT_DETECTION" allowActions="false" retraction="0.0" decelerationAcceleration="3.0" decelerationAngularAcceleration="34.90658503988659"/>
+                <Until type="IO" allowActions="false" ioType="NONE"/>
+                <Until type="EXPRESSION" allowActions="false">
+                  <ExpressionBranch/>
+                </Until>
+              </children>
+            </gui.program.direction.MoveDirectionNode>
+            <Waypoint type="Fixed" name="Waypoint_1" kinematicsFlags="-1">
+              <motionParameters/>
+            </Waypoint>
+          </children>
+        </Move>
+      </children>
+    </MainProgram>
+  </children>
+  </Program>
+  <!-- variants_moveopts: Move with flange TCP, OptiMove, joint angles, Variable waypoint with blend -->
+  <Program source="variants_moveopts">
+    <children>
+    <InitVariablesNode/>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="false">
+      <children>
+        <Move motionType="MoveJ" speed="1.0471975511965976" acceleration="1.3962634015954636" useActiveTCP="false" positionType="JointAngles" optimoveEnabled="true" optiMoveSpeed="0.3" optiMoveAcceleration="0.09">
+          <tcp referencedName="flange"/>
+          <feature class="GeomFeatureReference" referencedName="Joint_0_name"/>
+          <children>
+            <Waypoint type="Variable" name="Variable" kinematicsFlags="-1">
+              <motionParameters blendRadius="0.05"/>
+            </Waypoint>
+          </children>
+        </Move>
+      </children>
+    </MainProgram>
+  </children>
+  </Program>
+</NodeVariants>

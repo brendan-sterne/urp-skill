@@ -70,7 +70,7 @@ Generated or edited programs **move a real robot arm**. Always:
 - `references/features.md`: feature references, `BaseToFeature`, converting a Move, getting poses.
 - `references/robot-access.md`: network, dashboard, SSH and `scp` gotchas, real-time packet layout.
 - `references/node-catalog.md`: every node on PolyScope's node list as PolyScope writes it with default settings
-  (plus the rules it enforces); the full XML is in `examples/node-defaults-5.26.1.xml`.
+  (plus the rules it enforces); the XML is in `examples/node-defaults-5.26.1.xml` and `examples/node-variants-5.26.1.xml`.
 - `references/ursim.md`: running URSim, checking that PolyScope accepts a file, and driving the pendant over VNC.
 - `references/urscript-notes.md`: pose functions and snippets that came up while doing this.
 - `references/version-matrix.md`: what was verified, on which PolyScope version, and what was not.

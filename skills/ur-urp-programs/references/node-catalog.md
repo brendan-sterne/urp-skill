@@ -110,7 +110,38 @@ reinterprets them unless `BaseToFeature` is set accordingly).
 the dashboard shows `POWER_OFF` until then). The Move screen then accepts the current pose with OK, and jogging
 needs the arrow held down (press and hold the mouse button for a few seconds).
 
+**Flow control and structure**
+| UI | XML |
+|---|---|
+| Switch + "+ Case" + "Default Case" | `<Switch><expression/><children>` with `<Case caseValue="1">`, `<Case caseValue="2">` and the default case as `<Case caseValue="2147483647">` (the maximum 32-bit integer); each case has `<children>` (empty = `<Placeholder/>`) |
+| Timer Start / Stop / Reset | `<Timer action="Start"/"Stop"/"Reset">` each with its own `<variable name="timer_N" .../>` |
+| Assignment, source Operator | `<Assignment valueSource="Operator" valueType="Integer"><variable .../></Assignment>`. Request types: Yes/No, whole number, decimal number, text string; the operator message is an attribute (seen as `message=` in a real program) |
+| Call (SubProg inside the program) | `<CallSubProgram/>` until a target is chosen |
+| SubProg with a **top-level row selected** | a definition: `<SubProgram name="SubProgram_1" keepHidden="false" keepSynchronizedWithDisk="false"><children><Placeholder/></children></SubProgram>`, written after `MainProgram`. Panel: Rename, Load File, Save SubProgram, "Keep SubProgram File Updated", "Hide Subprogram Tree" |
+| "Add Before Start Sequence" ticked | `<SpecialSequence type="BeforeStart"><children><Placeholder/></children></SpecialSequence>` before `MainProgram` |
+| Script, type File, no file chosen | **PolyScope fails to save the program** ("Unable to Save Program"): the written file stops at `<Script type="File"><cachedContents>` and is truncated. Choose a file or use type Line |
+
+**Direction `Until` conditions** (inside the Direction node)
+| UI | XML |
+|---|---|
+| Distance | `<Until type="DISTANCE" allowActions="false" deceleration="3.0" distanceNodeType="STOP"><Distance>-1.0</Distance><motionParameters blendRadius="0.0"/></Until>` |
+| Tool Contact | `<Until type="TOOL_CONTACT_DETECTION" allowActions="false" retraction="0.0" decelerationAcceleration="3.0" decelerationAngularAcceleration="34.90658503988659"/>` |
+| I/O Input | `<Until type="IO" allowActions="false" ioType="NONE"/>` |
+| Expression | `<Until type="EXPRESSION" allowActions="false"><ExpressionBranch/></Until>` |
+| none yet | `<Until type="NONE" allowActions="false"/>` |
+
+**Move options**
+| UI | XML |
+|---|---|
+| Set TCP: flange (other choices: Ignore Active TCP, Use active TCP, hande) | `useActiveTCP="false"` and a `<tcp referencedName="flange"/>` child (before `<feature>`) |
+| Motion Controls: OptiMove | `optimoveEnabled="true"` (Classic is `"false"`) |
+| "Use joint angles" ticked | `positionType="JointAngles"` (otherwise `"CartesianPose"`) |
+| Waypoint type Variable position, Blend with radius | `<Waypoint type="Variable" name="Variable" kinematicsFlags="-1"><motionParameters blendRadius="0.05"/></Waypoint>` (50 mm is the default once "Blend with radius" is chosen) |
+
+**Backups.** Saving over an existing file keeps the previous version as `name.old0` (and so on), which is where the `.oldN`
+companions come from.
+
 ## Not yet explored
-Variable position, Direction `Until` conditions, Switch cases, Timer actions, Script from file, Assignment (operator
-input), SubProgram definitions, "Set `<Output>` to f(x)", "Add Before Start Sequence", Move options (TCP, optimized
-motion controls, blend radius), and URCap nodes other than the built-in templates.
+"Set `<Output>` to f(x)", "Increment installation variable by one", Set TCP, the Direction "Add Action" toggle, a real
+Script `File` node with a chosen file, a Call with a chosen target, URCap nodes other than the built-in templates, and
+the Event/Thread options.
