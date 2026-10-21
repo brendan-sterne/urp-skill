@@ -30,7 +30,7 @@ Keys only; values vary.
 |---|---|---|
 | Robotiq_Grippers (Robotiq Inc.) | Gripper Activate: `com.robotiq.urcap.gripper.GripperActivate` | `ResetAndActivateKey` |
 | | Gripper: `com.robotiq.urcap.gripper.GripperNode` | `position`, `force`, `speed`, `positionInDouble`, `forceInDouble`, `speedInDouble`, `slaveIds` (`[9]`), `blocking`, `robotCompliant` |
-| | Grip Check: `...gripper_validation_node`, If: `...gripper_validation_if_node` | `DimensionKey`, `DimensionPositiveGapKey`-style gap keys, `GripperIdKey`, `ModelDefinedKey`, `ObjectDetectedKey`, `DimensionValidationKey` |
+| | Grip Check: `...gripper_validation_node`, If: `...gripper_validation_if_node` | `DimensionKey`, `DimensionDimensionPositiveGapKey` (sic), `DimensionNegativeGapKey`, `GripperIdKey`, `ModelDefinedKey`, `ObjectDetectedKey`, `DimensionValidationKey` |
 | OnRobot (OnRobot A/S) | 2FG Grip / 2FG Release: `com.onrobot.urcap.unified.2FG Grip` / `... Release` | `twofg.external-grip.target-width`, `twofg.internal-grip.target-width` (meters) |
 | Schmalz Gripper (J.Schmalz GmbH) | `com.JSchmalzGmbH.SchmalzGripper.SchmalzGripSwing` | Suction (default): `Variable` keys `dummyPartPresent`, `dummy_magnetOn`; Release / Part Present: `NodeFunctions` = `2` / `3` |
 | External Control (FZI) | `com.fzi.externalcontrol.ExternalControlNode` | none (empty `dataModel`; the host address is an installation setting) |
