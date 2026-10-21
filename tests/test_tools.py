@@ -287,3 +287,29 @@ def test_safety_checksum_sets_crcvalue():
     assert ET.fromstring(xml).get("crcValue") == "2189851243"          # 0x82867A6B
     xml2, _ = build_movej_program.build(wps, TEMPLATE, "x", 0.003, 0.5, 0.5, 0.5, safety_checksum="DEADBEEF")
     assert ET.fromstring(xml2).get("crcValue") == "3735928559"         # 0xDEADBEEF
+
+
+# ---- expression variable references in the outline ---------------------------------------------
+def test_outline_resolves_variable_references(tmp_path):
+    xml = """<URProgram name="t" installation="default"><kinematics/><children><MainProgram><children>
+      <Assignment valueSource="Expression">
+        <variable name="var_1"><initializeExpression/></variable>
+        <expression><ExpressionChar character="5"/><ExpressionChar character="+"/><ExpressionChar character="2"/></expression>
+      </Assignment>
+      <Assignment valueSource="Expression">
+        <variable name="var_2"><initializeExpression/></variable>
+        <expression>
+          <ExpressionVariable><ProgramVariable reference="../../../../Assignment/variable"/></ExpressionVariable>
+          <ExpressionChar character="*"/><ExpressionChar character="2"/>
+        </expression>
+      </Assignment>
+      <If type="If"><expression>
+          <ExpressionVariable><ProgramVariable reference="../../../../Assignment[2]/variable"/></ExpressionVariable>
+          <ExpressionChar character="&gt;"/><ExpressionChar character="6"/></expression><children><Placeholder/></children></If>
+    </children></MainProgram></children></URProgram>"""
+    urp = tmp_path / "t.urp"
+    urp_tools.write_urp(xml, urp)
+    out = run(SCRIPTS / "urp_tools.py", "outline", urp).stdout
+    assert "var_1 = 5+2" in out
+    assert "var_2 = var_1*2" in out          # the reference resolved to the first assignment's variable
+    assert "If" in out and "var_2>6" in out  # [2] picks the second Assignment

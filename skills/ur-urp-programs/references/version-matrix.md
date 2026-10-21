@@ -23,6 +23,8 @@ with your PolyScope version and results to extend this table.
 | Uncompressed `.urp` accepted | not tested | not tested | not tested |
 | PolyScope X (`.urpx`) | out of scope | out of scope | out of scope |
 
+Also verified in URSim 5.26.1: expressions are `ExpressionChar`/`ExpressionToken`/`ExpressionVariable` lists (variable-dropdown picks are back-references); a Call stores the subprogram definition and the top-level `SubProgram` is a back-reference. Not tested: whether an expression typed with plain variable names behaves like one using a variable reference at run time.
+
 Known unknowns: whether `kinematicsFlags` ever takes values other than `-1` (untaught) and `4` (taught); when PolyScope refreshes a Script node's
 `cachedContents`; how PolyScope handles overlapping blend radii on a MoveJ with closely spaced waypoints; what
 a physical pendant does when a program's `crcValue` differs from its safety checksum; what the occasional

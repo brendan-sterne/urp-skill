@@ -35,14 +35,49 @@ def write_urp(xml_text, path):
         g.write(xml_text.encode("utf-8"))
 
 
-def expr_text(e):
+def resolve_reference(elem, ref, parents):
+    """Resolve an XStream-style relative reference such as "../../../../Assignment/variable"
+    (optionally with [n] indexes, 1-based) starting from `elem`. Returns the element or None."""
+    cur = elem
+    for part in ref.split("/"):
+        if part == "..":
+            cur = parents.get(cur)
+        elif part in ("", "."):
+            continue
+        else:
+            m = part.partition("[")
+            tag, idx = m[0], int(m[2].rstrip("]")) if m[2] else 1
+            kids = [c for c in cur if c.tag == tag] if cur is not None else []
+            cur = kids[idx - 1] if len(kids) >= idx else None
+        if cur is None:
+            return None
+    return cur
+
+
+def expr_text(e, parents=None):
+    """Readable text of an <expression>: characters and tokens, with variable references
+    (<ExpressionVariable><ProgramVariable reference=.../>) resolved to the variable's name."""
     if e is None:
         return ""
-    return "".join(x.get("character") or x.get("token") or "" for x in e.iter()
-                   if x.tag.startswith("Expression"))
+    out = []
+    for x in e:
+        if x.tag == "ExpressionChar":
+            out.append(x.get("character") or "")
+        elif x.tag == "ExpressionToken":
+            out.append((x.get("token") or "").strip())
+        elif x.tag == "ExpressionVariable":
+            pv = x.find("ProgramVariable")
+            name = None
+            if pv is not None:
+                name = pv.get("name")
+                if name is None and pv.get("reference") and parents is not None:
+                    target = resolve_reference(pv, pv.get("reference"), parents)
+                    name = target.get("name") if target is not None else None
+            out.append(name or "<var>")
+    return "".join(out)
 
 
-def describe(e):
+def describe(e, parents=None):
     t = e.tag
     keep = ("name", "type", "motionType", "strategyProgramNodeType", "action", "runOnlyOnce", "class")
     attrs = " ".join(f"{k}={v}" for k, v in e.attrib.items() if k in keep)
@@ -61,9 +96,9 @@ def describe(e):
             extra += f" blend={m.get('blendRadius')}"
     elif t == "Assignment":
         v = e.find("variable")
-        extra = f" {v.get('name') if v is not None else '?'} = {expr_text(e.find('expression'))}"
-    elif t in ("If", "Loop", "Wait", "Set"):
-        ex = expr_text(e.find("expression"))
+        extra = f" {v.get('name') if v is not None else '?'} = {expr_text(e.find('expression'), parents)}"
+    elif t in ("If", "Loop", "Wait", "Set", "Event", "Script", "Switch"):
+        ex = expr_text(e.find("expression"), parents)
         if ex:
             extra += " " + ex
         p = e.find("pin")
@@ -72,14 +107,14 @@ def describe(e):
     return t + (" " + attrs if attrs else "") + extra
 
 
-def walk(e, depth, out):
+def walk(e, depth, out, parents=None):
     if e.tag in SKIP and e.tag != "children":
         return
     if e.tag != "children":
-        out.append("  " * depth + describe(e))
+        out.append("  " * depth + describe(e, parents))
         depth += 1
     for c in e:
-        walk(c, depth, out)
+        walk(c, depth, out, parents)
 
 
 def outline(path):
@@ -92,10 +127,11 @@ def outline(path):
                    for e in root.iter("Contributed")})
     if caps:
         print("URCap nodes:", caps)
+    parents = {c: p for p in root.iter() for c in p}
     lines = []
     children = root.find("children")
     for c in children if children is not None else []:
-        walk(c, 0, lines)
+        walk(c, 0, lines, parents)
     print("\n".join(lines))
 
 

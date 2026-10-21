@@ -51,7 +51,10 @@ PolyScope serializes repeated objects with XStream-style references. A waypoint'
 `<Kinematics reference="../../../../../../../../kinematics"/>` when it equals the robot's current top-level
 calibration, and as an explicit block when it does not (18 explicit and 1 reference in one real program; all
 explicit after saving under a different calibration). A Move's `<feature>` can likewise be a relative-path
-`reference`. Both forms are valid; a generator can always write the explicit form.
+`reference`. Both forms are valid; a generator can always write the explicit form. Variable references in expressions
+(`ProgramVariable reference`) work the same way, and the **first occurrence in document order holds the full element**:
+a subprogram that is called is written in full inside the `CallSubProgram`, and the top-level `<SubProgram>` becomes
+`<SubProgram reference="../MainProgram/children/CallSubProgram/subprogram"/>`.
 
 ## Container across versions
 Programs saved by PolyScope 5.13.1, 5.25.1 and 5.26.1 were all gzip-compressed XML with the same root element
@@ -86,8 +89,18 @@ waypoint (seen on every taught waypoint, from real robots and URSim). Other valu
 write `4` for waypoints with joint angles.
 
 ## Expressions
-Stored one character per element: `<ExpressionChar character="0"/>`, with
-`<ExpressionToken token="False"/>` for keywords. A value `0.0` is three elements.
+Expressions (`<expression>`, `<initializeExpression>`, script lines) are stored as a flat list of elements, one per
+character or token:
+- `<ExpressionChar character="5"/>` for each typed character, including operators, letters and punctuation (`>` is
+  written `&gt;`). A value `0.0` is three elements, and a script line `sleep(0.1)` is ten.
+- `<ExpressionToken token="False"/>` for keywords such as `True`/`False`.
+- `<ExpressionVariable><ProgramVariable reference="../../../../Assignment/variable"/></ExpressionVariable>` when a variable
+  was chosen from the editor's Variable dropdown: a **back-reference by relative path** to that variable's declaration,
+  not a name (see "Back-references").
+
+An expression typed on the keyboard keeps variable names as plain characters (`v`,`a`,`r`,`_`,`1`). The tree shows both
+forms identically (`var_1>100`). Whether the typed form behaves the same at run time was not tested; the variable-reference
+form breaks if the referenced node moves, because the path is relative.
 
 ## Script nodes
 - `<Script type="File">` has `<file>/programs/name.script</file>` and `<cachedContents>` holding a copy of the

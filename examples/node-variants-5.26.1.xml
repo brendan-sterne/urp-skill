@@ -183,4 +183,99 @@
     </MainProgram>
   </children>
   </Program>
+  <!-- adv_expressions: filled-in expressions (typed and variable-reference forms), If, Script line and file, Event with trigger,
+       Call with a chosen subprogram (definition inside the Call, top-level SubProgram as a back-reference), Home in time mode,
+       Thread with Loops Forever off -->
+  <Program source="adv_expressions">
+    <children>
+    <InitVariablesNode/>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="true">
+      <children>
+        <Assignment valueSource="Expression">
+          <variable name="var_1" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+          <expression>
+            <ExpressionChar character="5"/>
+            <ExpressionChar character="+"/>
+            <ExpressionChar character="2"/>
+          </expression>
+        </Assignment>
+        <Assignment valueSource="Expression">
+          <variable name="var_2" prefersPersistentValue="false" favourite="false">
+            <initializeExpression/>
+          </variable>
+          <expression>
+            <ExpressionVariable>
+              <ProgramVariable reference="../../../../Assignment/variable"/>
+            </ExpressionVariable>
+            <ExpressionChar character="*"/>
+            <ExpressionChar character="2"/>
+          </expression>
+        </Assignment>
+        <If type="If" checkContinuously="false">
+          <expression>
+            <ExpressionVariable>
+              <ProgramVariable reference="../../../../Assignment/variable"/>
+            </ExpressionVariable>
+            <ExpressionChar character="&gt;"/>
+            <ExpressionChar character="6"/>
+          </expression>
+          <children>
+            <Placeholder/>
+          </children>
+        </If>
+        <Script type="Line">
+          <expression>
+            <ExpressionChar character="s"/>
+            <ExpressionChar character="l"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="p"/>
+            <ExpressionChar character="("/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character="."/>
+            <ExpressionChar character="1"/>
+            <ExpressionChar character=")"/>
+          </expression>
+        </Script>
+        <CallSubProgram>
+          <subprogram name="SubProgram_1" keepHidden="false" keepSynchronizedWithDisk="false">
+            <children>
+              <Placeholder/>
+            </children>
+          </subprogram>
+        </CallSubProgram>
+        <SafeHome positionOptionType="TIME" speed="1.0471975511965976" acceleration="1.3962634015954636" nextMotionTime="2.0"/>
+        <Script type="File">
+          <cachedContents>sleep(0.2)
+</cachedContents>
+          <file>/ursim/programs/adv_script.script</file>
+        </Script>
+      </children>
+    </MainProgram>
+    <SubProgram reference="../MainProgram/children/CallSubProgram/subprogram"/>
+    <Event>
+      <expression>
+        <ExpressionChar character="v"/>
+        <ExpressionChar character="a"/>
+        <ExpressionChar character="r"/>
+        <ExpressionChar character="_"/>
+        <ExpressionChar character="1"/>
+        <ExpressionChar character="&gt;"/>
+        <ExpressionChar character="1"/>
+        <ExpressionChar character="0"/>
+        <ExpressionChar character="0"/>
+      </expression>
+      <children>
+        <Placeholder/>
+      </children>
+    </Event>
+    <Thread name="Thread_1" runOnlyOnce="true">
+      <children>
+        <Placeholder/>
+      </children>
+    </Thread>
+  </children>
+  </Program>
 </NodeVariants>

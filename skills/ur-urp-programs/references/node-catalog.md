@@ -138,10 +138,28 @@ needs the arrow held down (press and hold the mouse button for a few seconds).
 | "Use joint angles" ticked | `positionType="JointAngles"` (otherwise `"CartesianPose"`) |
 | Waypoint type Variable position, Blend with radius | `<Waypoint type="Variable" name="Variable" kinematicsFlags="-1"><motionParameters blendRadius="0.05"/></Waypoint>` (50 mm is the default once "Blend with radius" is chosen) |
 
+**Expressions and the remaining Advanced nodes** (filled in and saved, 2026-10-21)
+| UI | XML |
+|---|---|
+| Assignment `var_1 := 5+2` | `<Assignment valueSource="Expression"><variable name="var_1" .../><expression>` + `ExpressionChar` `5`, `+`, `2` |
+| Assignment `var_2 := var_1*2` (variable picked from the dropdown) | the expression starts with `<ExpressionVariable><ProgramVariable reference="../../../../Assignment/variable"/></ExpressionVariable>`, then `*`, `2` |
+| If `var_1>6` | `<If type="If" ...><expression>` variable reference, `>` (`&gt;`), `6` |
+| Script line `sleep(0.1)` | `<Script type="Line"><expression>` one `ExpressionChar` per character |
+| Script File, file created with the built-in File Editor | `<Script type="File"><cachedContents>sleep(0.2)\n</cachedContents><file>/ursim/programs/adv_script.script</file></Script>` |
+| Event trigger typed as `var_1>100` | `<Event><expression>` plain characters (a typed name is not a variable reference) |
+| Call with `SubProgram_1` chosen | `<CallSubProgram><subprogram name="SubProgram_1" keepHidden="false" keepSynchronizedWithDisk="false"><children><Placeholder/></children></subprogram></CallSubProgram>`; the top-level node is then `<SubProgram reference="../MainProgram/children/CallSubProgram/subprogram"/>` |
+| Home in time mode | `<SafeHome positionOptionType="TIME" speed="1.047..." acceleration="1.396..." nextMotionTime="2.0"/>` |
+| Thread, "Loops Forever" unticked | `<Thread name="Thread_1" runOnlyOnce="true">` ("Track program execution" was ticked but wrote nothing visible) |
+
+Entering expressions in the UI: the editor is a keypad with dropdowns for Input, Output, Variable, Pose and Function; hardware
+keystrokes also work in it. Choosing a variable from the dropdown produces the back-reference form; typing produces plain
+characters. The Script node's **Edit** button opens a File Editor (Open, Save, Save As, Delete, Insert, Exit); Save As creates
+the file and attaches it to the node. The call dropdown lists the existing subprograms and "Create New".
+
 **Backups.** Saving over an existing file keeps the previous version as `name.old0` (and so on), which is where the `.oldN`
 companions come from.
 
 ## Not yet explored
-"Set `<Output>` to f(x)", "Increment installation variable by one", Set TCP, the Direction "Add Action" toggle, a real
-Script `File` node with a chosen file, a Call with a chosen target, URCap nodes other than the built-in templates, and
-the Event/Thread options.
+"Set `<Output>` to f(x)", "Increment installation variable by one", Set TCP, the Direction "Add Action" toggle, Event
+and Thread contents (only their headers were set), function calls and `Pose` entries in expressions, Assignment operator
+request types, and URCap nodes other than the built-in templates.
