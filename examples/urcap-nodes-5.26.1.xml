@@ -1,0 +1,54 @@
+<!-- PolyScope 5.26.1 (URSim) output after installing the External Control 1.0.5 and Schmalz Gripper 4.4.2 URCaps
+     and adding their nodes (Schmalz: Suction, Release, Part Present). InitVariablesNode lists the variables the
+     Schmalz URCap registered. See references/urcaps.md. -->
+<Excerpt>
+<InitVariablesNode>
+      <variables>
+        <variable name="MagnetON">
+          <expression>
+            <ExpressionToken token="False"/>
+          </expression>
+        </variable>
+        <variable name="PartPresent">
+          <expression>
+            <ExpressionToken token="False"/>
+          </expression>
+        </variable>
+      </variables>
+    </InitVariablesNode>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="true">
+      <children>
+        <Contributed strategyClass="com.fzi.externalcontrol.ExternalControlNode" strategyProgramNodeType="External Control" strategyURCapDeveloper="FZI Research Center for Information Technology" strategyURCapName="External Control">
+          <dataModel/>
+        </Contributed>
+        <Contributed strategyClass="com.JSchmalzGmbH.SchmalzGripper.SchmalzGripSwing" strategyProgramNodeType="Schmalz Gripper" strategyURCapDeveloper="J.Schmalz GmbH" strategyURCapName="Schmalz Gripper">
+          <dataModel>
+            <Variable key="dummyPartPresent">
+              <variable name="PartPresent" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionToken token="False"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+            <Variable key="dummy_magnetOn">
+              <variable name="MagnetON" prefersPersistentValue="false" favourite="false">
+                <initializeExpression>
+                  <ExpressionToken token="False"/>
+                </initializeExpression>
+              </variable>
+            </Variable>
+          </dataModel>
+        </Contributed>
+        <Contributed strategyClass="com.JSchmalzGmbH.SchmalzGripper.SchmalzGripSwing" strategyProgramNodeType="Schmalz Gripper" strategyURCapDeveloper="J.Schmalz GmbH" strategyURCapName="Schmalz Gripper">
+          <dataModel>
+            <data key="NodeFunctions" value="2"/>
+          </dataModel>
+        </Contributed>
+        <Contributed strategyClass="com.JSchmalzGmbH.SchmalzGripper.SchmalzGripSwing" strategyProgramNodeType="Schmalz Gripper" strategyURCapDeveloper="J.Schmalz GmbH" strategyURCapName="Schmalz Gripper">
+          <dataModel>
+            <data key="NodeFunctions" value="3"/>
+          </dataModel>
+        </Contributed>
+      </children>
+    </MainProgram>
+</Excerpt>
