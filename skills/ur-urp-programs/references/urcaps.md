@@ -31,6 +31,7 @@ Keys only; values vary.
 | Robotiq_Grippers (Robotiq Inc.) | Gripper Activate: `com.robotiq.urcap.gripper.GripperActivate` | `ResetAndActivateKey` |
 | | Gripper: `com.robotiq.urcap.gripper.GripperNode` | `position`, `force`, `speed`, `positionInDouble`, `forceInDouble`, `speedInDouble`, `slaveIds` (`[9]`), `blocking`, `robotCompliant` |
 | | Grip Check: `...gripper_validation_node`, If: `...gripper_validation_if_node` | `DimensionKey`, `DimensionDimensionPositiveGapKey` (sic), `DimensionNegativeGapKey`, `GripperIdKey`, `ModelDefinedKey`, `ObjectDetectedKey`, `DimensionValidationKey` |
+| | Vacuum: `com.robotiq.urcap.gripper.vacuum.program.node` | `programTreeDefinedForModelKey`, `vacuumGripperModel` (for example `EPick / AirPick`); has a `<state isChildrenLocked="true"/>` and a `Comment` child |
 | OnRobot (OnRobot A/S) | 2FG Grip / 2FG Release: `com.onrobot.urcap.unified.2FG Grip` / `... Release` | `twofg.external-grip.target-width`, `twofg.internal-grip.target-width` (meters) |
 | Schmalz Gripper (J.Schmalz GmbH) | `com.JSchmalzGmbH.SchmalzGripper.SchmalzGripSwing` | Suction (default): `Variable` keys `dummyPartPresent`, `dummy_magnetOn`; Release / Part Present: `NodeFunctions` = `2` / `3` |
 | External Control (FZI) | `com.fzi.externalcontrol.ExternalControlNode` | none (empty `dataModel`; the host address is an installation setting) |
@@ -42,15 +43,25 @@ Keys only; values vary.
 positions. A palletizing program is therefore not portable between robots, and editing one by hand is risky.
 
 ## Installing URCaps in URSim
-1. Put the URCap file (`.jar` or `.urcap`) in the folder mounted at `/urcaps` (`-v ~/urcaps:/urcaps`).
+1. Put the URCap file in the folder mounted at `/urcaps` (`-v ~/urcaps:/urcaps`). **It must end in `.jar`**: the
+   image's `entrypoint.sh` only runs `cp /urcaps/*.jar` into the bundle folder, so a `.urcap` file is silently
+   ignored. A `.urcap` is the same OSGi bundle format, so a copy renamed to `.jar` works.
 2. Restart the container (`docker restart ursim`). On restart the log (`/ursim/polyscope.log`) shows each URCap
    starting (for example `URcap enabling external control registering!`).
 3. A **URCaps** category appears in the Program tab's node list with each URCap's nodes.
 4. Add the nodes, save, unpack and diff as for any other node (`ursim.md`).
 
-Verified with External Control 1.0.5 and Schmalz Gripper 4.4.2, both taken from a real robot's `/root/.urcaps/`
+Verified with External Control 1.0.5, Schmalz Gripper 4.4.2 and Robotiq_Grippers 3.48.0.160259, both taken from a real robot's `/root/.urcaps/`
 (on e-Series the installed bundles are `.jar` files there; other vendors install elsewhere). Alternatively install
 through PolyScope: Settings > System > URCaps, the `+` button, then restart PolyScope.
+
+**Robotiq in URSim.** The Robotiq bundle's activator fails in URSim (`GripperActivator.start` throws a
+`NullPointerException` in `PolyscopeIocModule.configure`, and the log shows `Unable to load properties
+/root/robotiq/gripper/commandRanges.properties` and `Connection refused` to its gripper driver), but the URCap still adds
+its toolbar icon and four nodes (Grip Check, Gripper Activate, Gripper, Vacuum), which can be added and saved. The XML
+differs from a real robot's: an unconfigured Gripper node had only `positionInDouble`, `forceInDouble` and `speedInDouble`,
+while real programs also hold `position`, `force`, `speed`, `slaveIds`, `blocking` and `robotCompliant`, which come from the
+connected gripper. **Copy Robotiq nodes from a program saved on the real robot rather than from URSim.**
 
 Limits: gripper URCaps will add and save nodes without hardware, but communication and installation screens do not
 work; a URCap built for an older URCap API may not load; and a program that uses a URCap that is not installed still

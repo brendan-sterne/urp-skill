@@ -1,8 +1,9 @@
-<!-- PolyScope 5.26.1 (URSim) output after installing the External Control 1.0.5 and Schmalz Gripper 4.4.2 URCaps
-     and adding their nodes (Schmalz: Suction, Release, Part Present). InitVariablesNode lists the variables the
-     Schmalz URCap registered. See references/urcaps.md. -->
-<Excerpt>
-<InitVariablesNode>
+<!-- PolyScope 5.26.1 (URSim) output after installing URCaps and adding their nodes. See references/urcaps.md.
+     Robotiq nodes saved without a gripper lack the keys that real programs have. -->
+<URCapNodes>
+  <!-- urcaps_a: External Control and Schmalz Gripper (Suction, Release, Part Present) -->
+  <Program source="urcaps_a">
+    <InitVariablesNode>
       <variables>
         <variable name="MagnetON">
           <expression>
@@ -51,4 +52,54 @@
         </Contributed>
       </children>
     </MainProgram>
-</Excerpt>
+  </Program>
+  <!-- robotiq: Robotiq Gripper Activate, Gripper, Vacuum and Grip Check, unconfigured, saved in URSim with no gripper -->
+  <Program source="robotiq">
+    <InitVariablesNode/>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="true">
+      <children>
+        <Contributed strategyClass="com.robotiq.urcap.gripper.GripperActivate" strategyProgramNodeType="Gripper Activate" strategyURCapDeveloper="Robotiq Inc." strategyURCapName="Robotiq_Grippers">
+          <dataModel>
+            <data key="ResetAndActivateKey" value="false"/>
+          </dataModel>
+        </Contributed>
+        <Contributed strategyClass="com.robotiq.urcap.gripper.GripperNode" strategyProgramNodeType="Gripper" strategyURCapDeveloper="Robotiq Inc." strategyURCapName="Robotiq_Grippers">
+          <dataModel>
+            <data key="positionInDouble" value="-1.0"/>
+            <data key="forceInDouble" value="100.0"/>
+            <data key="speedInDouble" value="100.0"/>
+          </dataModel>
+        </Contributed>
+        <Contributed strategyClass="com.robotiq.urcap.gripper.vacuum.program.node" strategyProgramNodeType="Vacuum" strategyURCapDeveloper="Robotiq Inc." strategyURCapName="Robotiq_Grippers">
+          <dataModel>
+            <data key="programTreeDefinedForModelKey" value="EPick / AirPick"/>
+            <data key="vacuumGripperModel" value="EPick / AirPick"/>
+          </dataModel>
+          <state isChildrenLocked="true"/>
+          <children>
+            <Comment comment="No external air supply needed with EPick."/>
+          </children>
+        </Contributed>
+        <Contributed strategyClass="com.robotiq.urcap.gripper.gripper_validation_node" strategyProgramNodeType="Grip Check" strategyURCapDeveloper="Robotiq Inc." strategyURCapName="Robotiq_Grippers">
+          <dataModel>
+            <data key="ObjectDetectedKey" value="true"/>
+            <data key="DimensionValidationKey" value="false"/>
+            <data key="DimensionKey" value="100.0"/>
+            <data key="DimensionDimensionPositiveGapKey" value="5.0"/>
+            <data key="DimensionNegativeGapKey" value="5.0"/>
+            <data key="ModelDefinedKey" value="true"/>
+          </dataModel>
+          <state isChildrenLocked="true"/>
+          <children>
+            <Contributed strategyClass="com.robotiq.urcap.gripper.gripper_validation_if_node" strategyProgramNodeType="If" strategyURCapDeveloper="Robotiq Inc." strategyURCapName="Robotiq_Grippers">
+              <dataModel/>
+              <children>
+                <Placeholder/>
+              </children>
+            </Contributed>
+          </children>
+        </Contributed>
+      </children>
+    </MainProgram>
+  </Program>
+</URCapNodes>
