@@ -93,7 +93,10 @@ Expressions (`<expression>`, `<initializeExpression>`, script lines) are stored 
 character or token:
 - `<ExpressionChar character="5"/>` for each typed character, including operators, letters and punctuation (`>` is
   written `&gt;`). A value `0.0` is three elements, and a script line `sleep(0.1)` is ten.
-- `<ExpressionToken token="False"/>` for keywords such as `True`/`False`.
+- `<ExpressionToken token="False"/>` for keywords such as `True`/`False`, and for a **function name** chosen from the
+  Function dropdown (`<ExpressionToken token="get_actual_tcp_pose"/>` followed by `(` and `)` characters).
+- `<ExpressionGeomFeature><feature referencedName="back_wall"/></ExpressionGeomFeature>` for a pose constant chosen from
+  the Pose dropdown.
 - `<ExpressionVariable><ProgramVariable reference="../../../../Assignment/variable"/></ExpressionVariable>` when a variable
   was chosen from the editor's Variable dropdown: a **back-reference by relative path** to that variable's declaration,
   not a name (see "Back-references").

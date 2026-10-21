@@ -65,6 +65,10 @@ def expr_text(e, parents=None):
             out.append(x.get("character") or "")
         elif x.tag == "ExpressionToken":
             out.append((x.get("token") or "").strip())
+        elif x.tag == "ExpressionGeomFeature":
+            f = x.find("feature")
+            name = f.get("referencedName") if f is not None else None
+            out.append((name + "_const") if name else "<pose>")   # shown as NAME_const in the pendant
         elif x.tag == "ExpressionVariable":
             pv = x.find("ProgramVariable")
             name = None

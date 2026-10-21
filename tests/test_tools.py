@@ -313,3 +313,16 @@ def test_outline_resolves_variable_references(tmp_path):
     assert "var_1 = 5+2" in out
     assert "var_2 = var_1*2" in out          # the reference resolved to the first assignment's variable
     assert "If" in out and "var_2>6" in out  # [2] picks the second Assignment
+
+
+def test_outline_renders_function_tokens_and_pose_constants(tmp_path):
+    xml = """<URProgram name="t" installation="default"><kinematics/><children><MainProgram><children>
+      <Assignment valueSource="Expression"><variable name="a"/><expression>
+        <ExpressionToken token="get_actual_tcp_pose"/><ExpressionChar character="("/><ExpressionChar character=")"/></expression></Assignment>
+      <Assignment valueSource="Expression"><variable name="b"/><expression>
+        <ExpressionGeomFeature><feature referencedName="back_wall"/></ExpressionGeomFeature></expression></Assignment>
+    </children></MainProgram></children></URProgram>"""
+    urp = tmp_path / "t.urp"
+    urp_tools.write_urp(xml, urp)
+    out = run(SCRIPTS / "urp_tools.py", "outline", urp).stdout
+    assert "a = get_actual_tcp_pose()" in out and "b = back_wall_const" in out

@@ -159,7 +159,22 @@ the file and attaches it to the node. The call dropdown lists the existing subpr
 **Backups.** Saving over an existing file keeps the previous version as `name.old0` (and so on), which is where the `.oldN`
 companions come from.
 
+**The last variants** (filled in and saved, 2026-10-21)
+| UI | XML |
+|---|---|
+| Assignment, operator input, four request types | `<Assignment valueSource="Operator" message="msg_bool" valueType="Boolean"/"Integer"/"Float"/"String">` for Yes/No, whole number, decimal number, text string. The operator message is the `message` attribute and is shown in the tree as the value (`var_1:='msg_bool'`) |
+| Function picked from the editor's Function dropdown | the function **name is one token**: `<ExpressionToken token="get_actual_tcp_pose"/>`, then `ExpressionChar` `(` and `)`. The list offers `pose_add`, `pose_sub`, `pose_trans`, `pose_inv`, `interpolate_pose`, `pose_dist`, `get_actual_tcp_pose()`, `get_actual_joint_positions()`, `get_inverse_kin(<pose>)`, `get_target_tcp_pose()`, `force()`, `get_tcp_force()`, `integer_to_binary_list(<integer>)` and more |
+| Pose picked from the Pose dropdown (Base, Tool, `back_wall_const`, `front_wall_const`) | `<ExpressionGeomFeature><feature referencedName="back_wall"/></ExpressionGeomFeature>` (shown as `back_wall_const`; the live feature variable is in the Variable dropdown instead) |
+| Set, "Set `<Output>` to f(x)" | `<Set type="ExpressionOutput"><pin referencedName="digital_out[0]"/><expression>` typed characters `</expression></Set>` |
+| Set, "Increment installation variable by one", with "Set TCP" ticked | `<Set type="IncrementVariable"><tcp referencedName="hande"/><installationVariable name="i_var_1"/></Set>`. "Set TCP" adds a `<tcp referencedName="..."/>` child (TCP choices: flange, hande); the tree shows `Set i_var_1=i_var_1+1` |
+| Installation variables | not in the program: they are in the installation's variables file, `default.variables`, which is **gzip XML** once it has content: `<InstallationVariables timestamp="..."><variable name="i_var_1" value="0" favourite="false"/></InstallationVariables>`. Created in Installation > Variables (Create New; a default name `i_var_1` is pre-filled) |
+| Event body | `<Event><expression>...</expression><children>` holding any nodes directly (a Move with waypoint, Comment and Popup were saved) |
+| Thread body | `<Thread name="Thread_1" runOnlyOnce="false"><children>` with Wait, Move, etc. A Move inside it can reference a feature element in an earlier node by relative path, for example `<feature reference="../../../../Event/children/Move/feature"/>` (first occurrence in document order holds the element) |
+| Direction Until with "Add Action" on | `<Until type="DISTANCE" allowActions="true" ...>` gains a `<children>` holding the action nodes (a Popup was saved) |
+
+Expressions are typed on the pendant by keypad or keyboard; typing and dropdown picks produce different encodings (see `format.md`).
+
 ## Not yet explored
-"Set `<Output>` to f(x)", "Increment installation variable by one", Set TCP, the Direction "Add Action" toggle, Event
-and Thread contents (only their headers were set), function calls and `Pose` entries in expressions, Assignment operator
-request types, and URCap nodes other than the built-in templates.
+Function calls with arguments built from the dropdown (`pose_trans(<pose_from>,<pose_to>)` placeholders), what the saved
+form of a function-with-arguments looks like, the expression editor's Input and Output dropdowns, Wait for Analog Input
+with a chosen input, other Direction Until types with actions, and URCap nodes other than the built-in templates.
