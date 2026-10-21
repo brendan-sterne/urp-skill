@@ -6,3 +6,6 @@ __pycache__/
 .env
 *.jar
 *.urcap
+
+# Vendor URCap files are third-party software: never commit them
+urcaps/
