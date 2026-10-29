@@ -326,3 +326,19 @@ def test_outline_renders_function_tokens_and_pose_constants(tmp_path):
     urp_tools.write_urp(xml, urp)
     out = run(SCRIPTS / "urp_tools.py", "outline", urp).stdout
     assert "a = get_actual_tcp_pose()" in out and "b = back_wall_const" in out
+
+
+def test_builder_handles_back_reference_kinematics_in_template():
+    """PolyScope writes a waypoint's <Kinematics> as a back-reference when it equals the robot's calibration."""
+    import re
+    m = re.search(r'<Waypoint type="Fixed".*?</Waypoint>', TEMPLATE, re.S)
+    ref_form = re.sub(r'<Kinematics .*?</Kinematics>', '<Kinematics reference="../../../../kinematics"/>',
+                      m.group(0), flags=re.S)
+    tpl = TEMPLATE
+    for wp in re.findall(r'<Waypoint type="Fixed".*?</Waypoint>', TEMPLATE, re.S):   # every waypoint uses the reference form
+        tpl = tpl.replace(wp, re.sub(r'<Kinematics .*?</Kinematics>', '<Kinematics reference="../../../../kinematics"/>', wp, flags=re.S))
+    wps = json.load(open(RECORDING))["waypoints"]
+    xml, n = build_movej_program.build(wps, tpl, "x", 0.003, 0.5, 0.5, 0.5)
+    root = ET.fromstring(xml)
+    kins = [k for k in root.iter("Kinematics")]
+    assert len(kins) == n and all(k.get("status") for k in kins)   # explicit blocks, built from the top-level calibration

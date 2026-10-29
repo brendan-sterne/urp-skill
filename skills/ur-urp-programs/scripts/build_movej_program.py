@@ -42,15 +42,22 @@ def build(wps, tpl, name, blend_m, speed, accel, dedup_mm, safety_checksum=None)
         if n != 1:
             raise SystemExit("template header has no crcValue attribute")
 
-    m = re.search(r'<Waypoint type="Fixed"[^>]*>.*?</Waypoint>', tpl, re.S)
-    if not m:
-        raise SystemExit("template has no Fixed waypoint to copy structure from")
-    wp = m.group(0)
-    tcp = re.search(r'<TCPOffset pose="([^"]*)"/>', wp).group(1)
-    kin = re.search(r'<Kinematics .*?</Kinematics>', wp, re.S).group(0)
-    flags = re.search(r'kinematicsFlags="([^"]*)"', wp).group(1)
-    if flags == "-1":
-        flags = "4"
+    # Per-waypoint pieces are copied from the template. PolyScope writes a waypoint's <Kinematics> either as an
+    # explicit block or, when it equals the robot's current calibration, as a back-reference
+    # (<Kinematics reference="..."/>), so look for an explicit block anywhere and fall back to the top-level one.
+    tcp_m = re.search(r'<TCPOffset pose="([^"]*)"/>', tpl)
+    if not tcp_m:
+        raise SystemExit("template has no <TCPOffset>; use a program saved by PolyScope that contains at least one waypoint")
+    tcp = tcp_m.group(1)
+    kin_m = re.search(r'<Kinematics [^>/]*>.*?</Kinematics>', tpl, re.S)
+    if kin_m:
+        kin = kin_m.group(0)
+    else:
+        top = re.search(r'<kinematics ([^>]*)>(.*?)</kinematics>', tpl, re.S)
+        if not top:
+            raise SystemExit("template has no calibration block (<kinematics>)")
+        kin = f'<Kinematics {top.group(1)}>{top.group(2)}</Kinematics>'
+    flags = "4"                      # value on taught waypoints; -1 means "not taught"
 
     parts, n = [], len(kept)
     for i, w in enumerate(kept):

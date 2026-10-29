@@ -47,6 +47,24 @@ Summary (details in [`references/version-matrix.md`](skills/ur-urp-programs/refe
   (`references/urcaps.md`).
 - PolyScope X (`.urpx`) is out of scope.
 
+## Scope and limits
+
+- **Robots and versions:** UR e-Series with PolyScope 5.x (programs from 5.13.1 to 5.26.1 were read; 5.25.1 and 5.26.1 were
+  used for edits). CB3 robots and PolyScope X are not covered.
+- `record_path.py` decodes the **e-Series real-time packet** (1220 bytes on 5.25.1). Other layouts, including CB3, differ, and
+  the script warns when the packet size is unexpected.
+- `build_movej_program.py` writes one base-frame `MoveJ` of joint waypoints that runs once, and needs a template program saved
+  by PolyScope on the same robot.
+- `make_feature_relative.py` needs the `.script` that PolyScope generates next to the program, the feature must exist in the
+  loaded installation, nested Moves are not supported, and waypoint names that PolyScope sanitizes in the script (spaces and
+  similar) may not match (it warns).
+- `ursim_load_check.py` relies on the dashboard reply texts seen in URSim 5.26.1, and `pendant_ui.sh` is only a wrapper: the
+  click coordinates in `references/ursim.md` are for URSim 5.26.1's 1280x800 pendant (UR3 model) and will differ elsewhere.
+- The example XML files were produced by URSim 5.26.1 (UR3) with its stock installation, so names such as `flange`, `hande`
+  and `back_wall` are URSim's, not yours.
+- `urp_tools.py`, `dashboard.py` and `posemath.py` are general. Python 3 and numpy are required; some network setup commands in
+  `references/robot-access.md` are for macOS.
+
 ## Use as a Claude Code skill
 
 Copy or symlink the skill folder into a skills directory:
