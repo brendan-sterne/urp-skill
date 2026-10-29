@@ -6,7 +6,7 @@ An **unofficial** agent skill (and a few small Python tools) for working with Un
 > Not affiliated with, endorsed by or supported by Universal Robots A/S. "Universal Robots", "UR" and
 > "PolyScope" are trademarks of their owner and are used here only to describe compatibility.
 > The `.urp` format is undocumented and changes between versions. Everything here comes from observing files
-> saved by the authors' own robots. **Read [SAFETY.md](SAFETY.md) before using anything on a real robot.**
+> saved by the authors' own robots and/or ursim. **Read [SAFETY.md](SAFETY.md) before using anything on a real robot.**
 
 ## What's in it
 
@@ -30,7 +30,7 @@ tests/                           pytest suite using synthetic fixtures only
 
 ## Status
 
-Honest summary (details in [`references/version-matrix.md`](skills/ur-urp-programs/references/version-matrix.md)):
+Summary (details in [`references/version-matrix.md`](skills/ur-urp-programs/references/version-matrix.md)):
 
 - **Verified** on programs saved by PolyScope 5.13.1, 5.25.1 and 5.26.1: the file is gzip XML with the same
   layout; node and field meanings (`references/format.md`, `references/node-catalog.md`); how feature-relative
